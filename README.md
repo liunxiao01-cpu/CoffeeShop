@@ -1,2 +1,2 @@
 # CoffeeShop
-This project will provide practical experience in applying C++ programming concepts to a simple management problem. By developing the system step by step, the team aims to produce a clear and functional academic demonstration of OOP, linked lists, CRUD operations, and File I/O.
+A coffee shop needs to keep track of its products, stock, customer orders, and daily sales. When these records are handled manually, information can be difficult to organize and review. This project proposes a simple Coffee Shop Management System developed in C++. The system will use a menu-driven command-line interface to help an operator manage basic coffee shop records.
