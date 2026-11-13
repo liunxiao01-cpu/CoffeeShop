@@ -89,5 +89,5 @@ class Inventory {
 };
 
 // Please check our proposal description and add more class. Have questions? We can discuss!
-// After writing your own algorithm, please don't push yet. Save the program to test and debug on your compiler first.
-// And we will check it together. After succeed and agreed, we will push it into GitHub!
+// After writing your own algorithm, please don't commit yet. Save the program to test and debug on your compiler first.
+// And we will check it together. After succeed and agreed, we will commit it into GitHub!
