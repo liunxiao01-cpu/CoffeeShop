@@ -25,7 +25,7 @@ class Menu {
             drink = "N/A";
             size = 'M';
             price = 0.00;
-            type = "N/A";
+            type = "Ice";
         }
 
         Menu(string drink_id, string drink,
@@ -55,11 +55,21 @@ class Menu {
             }
     }
 
+// Getters
     string getDrinkID();
     string getDrink();
     char getSize();
     double getPrice();
     string getType();
+
+// Setters
+    void setDrink(string drink);
+    void setSize(char size);
+    void setPrice(double price);
+    void setType(string type);
+
+// Displayer
+    void displayMenu();
 };
 
 // Class Inventory
@@ -83,6 +93,13 @@ class Inventory {
         {}
 
     // Method overload: addInventory(), useInventory(), viewInventory(), checkInventory() & updateInventory()
+    void addInventory(string item, int quantity);
+    void useInventory(string item, int quantity);
+    void viewInventory();
+    void checkInventory();
+    void updateInventory();
+    void loadInventory();
+    void saveInventory();
 };
 
 // Class OrderItem
