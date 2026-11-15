@@ -1,4 +1,9 @@
 #include <iostream>
+#include <string>
+#include <fstream>  // CSV file handling
+#include <sstream>  // Parsing CSV records
+#include <iomanip>  // Formatting prices and reports
+#include <cctype>  // Character conversion
 using namespace std;
 
 // --- Phase 2: Plan the classes, data records, program menu, and basic linked-list structures. ---
@@ -23,68 +28,38 @@ class Menu {
             type = "N/A";
         }
 
-        Menu(string drink_id) {
-            this->drink_id = drink_id;
-            drink = "N/A";
-            size = 'M';
-            price = 0.00;
-            type = "N/A";
-        }
+        Menu(string drink_id, string drink,
+             char size = 'M', double price = 0.00,
+             string type = "Ice") 
+        {
 
-        Menu(string drink_id, string drink) {
-            this->drink_id = drink_id;
-            this->drink = drink;
-            size = 'M';
-            price = 0.00;
-            type = "N/A";
-        }
-
-        Menu(string drink_id, string drink, char size) {
             this->drink_id = drink_id;
             this->drink = drink;
 
             if (size == 'S' || size == 'M' || size == 'L') {
                 this->size = size;
             } else {
-                size = 'M';
+                this->size = 'M';
             }
-            
-            type = "N/A";
-            price = 0.00;
-        }
 
-        Menu(string drink_id, string drink, char size, double price) {
-            this->drink_id = drink_id;
-            this->drink = drink;
-            
-            if (size == 'S' || size == 'M' || size == 'L') {
-                this->size = size;
+            if (price >= 0) {
+                this->price = price;
             } else {
-                size = 'M';
+                this->price = 0.00;
             }
-            
-            this->price = price;
-            type = "N/A";
-        }
-
-        Menu(string drink_id, string drink, char size, double price, string type) {
-            this->drink_id = drink_id;
-            this->drink = drink;
-            
-            if (size == 'S' || size == 'M' || size == 'L') {
-                this->size = size;
-            } else {
-                size = 'M';
-            }
-
-            this->price = price;
 
             if (type == "Hot" || type == "Ice" || type == "Frappe") {
                 this->type = type;
             } else {
-                type = "Ice";
+                this->type = "Ice";
             }
-        }
+    }
+
+    string getDrinkID();
+    string getDrink();
+    char getSize();
+    double getPrice();
+    string getType();
 };
 
 // Class Inventory
@@ -113,8 +88,8 @@ class Inventory {
 // Class OrderItem
 class OrderItem {
     private:
-        string drink;
-        string size;
+        string drink_id;
+        char size;
         int quantity;
         double unit_price;
 
@@ -128,6 +103,9 @@ class Order {
     private:
         int order_id;
         double total_price;
+        string order_date;
+        string order_time;
+        string staff_id;
 
         // Linked list of OrderItem objects
 
@@ -146,8 +124,9 @@ class Staff {
     private:
         string staff_id;
         string staff_name;
+        string position;
         string working_time;
-}
+};
 
 // Class Sales Report
 class SalesReport {
@@ -164,6 +143,7 @@ class SalesReport {
 // Class CoffeeShop
 class CoffeeShop {
     private:
+        Inventory inventory;
         // Menu
         // Inventory
         // Staff
