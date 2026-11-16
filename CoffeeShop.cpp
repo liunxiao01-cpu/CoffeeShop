@@ -8,24 +8,6 @@ using namespace std;
 
 // --- Phase 2: Plan the classes, data records, program menu, and basic linked-list structures. ---
 
-// Struct MenuNode
-struct MenuNode {
-    Menu data;
-    MenuNode* next;
-};
-
-// Struct StaffNode
-struct StaffNode {
-    Staff data;
-    StaffNode* next;
-};
-
-// Struct OrderNode
-struct OrderNode {
-    Order data;
-    OrderNode* next;
-};
-
 // Class Menu
 class Menu {
     // Menu members
@@ -48,8 +30,7 @@ class Menu {
 
         Menu(string drink_id, string drink,
              char size = 'M', double price = 0.00,
-             string type = "Ice") 
-        {
+             string type = "Ice") {
 
             this->drink_id = drink_id;
             this->drink = drink;
@@ -71,7 +52,7 @@ class Menu {
             } else {
                 this->type = "Ice";
             }
-    }
+        }
 
 // Getters
     string getDrinkID();
@@ -89,6 +70,13 @@ class Menu {
 // Displayer
     void displayMenu();
 };
+
+// Struct MenuNode
+struct MenuNode {
+    Menu data;
+    MenuNode* next;
+};
+
 
 // Class Inventory
 class Inventory {
@@ -110,11 +98,11 @@ class Inventory {
                       lemon(0)
         {}
 
-    // Method overload: addInventory(), useInventory(), viewInventory(), checkInventory() & updateInventory()
+    // Methods
     void addInventory(string item, int quantity);
-    void viewInventory(string item, int quantity);
+    void viewInventory();
     void checkInventory(string item);
-    void updateInventory();
+    void updateInventory(string item, int quantity);
     void loadInventory();
     void saveInventory();
 };
@@ -150,6 +138,12 @@ class OrderItem {
         void displayItem();
 };
 
+// Struct OrderItemNode
+struct OrderItemNode {
+    OrderItem data;
+    OrderItemNode* next;
+};
+
 class Order {
     private:
         int order_id;
@@ -160,9 +154,32 @@ class Order {
         string status;
 
         // Linked list of OrderItem objects
+        OrderItemNode* itemHead;
 
     public:
         // Constructor
+        Order() {
+            order_id = 0;
+            total_price = 0.00;
+            order_date = "N/A";
+            order_time = "N/A";
+            staff_id = "N/A";
+            status = "Pending";
+            itemHead = nullptr;
+        }
+
+        Order(int order_id, string order_date,
+              string order_time, string staff_id);
+
+        // Destructor
+        ~Order();
+
+    	// Getters
+        int getOrderID();
+        string getOrderDate();
+        string getOrderTime();
+        string getStaffID();
+        string getStatus();
 
         // Methods
         void addItem();
@@ -172,6 +189,12 @@ class Order {
         void displayOrder();
         void confirmOrder();
         void cancelOrder();
+};
+
+// Struct OrderNode
+struct OrderNode {
+    Order data;
+    OrderNode* next;
 };
 
 // Class Staff
@@ -189,15 +212,23 @@ class Staff {
           position("N/A"), working_time("N/A") {}
 
     // Methods
-    void addStaff();
     void updateStaff();
-    void removeStaff();
     void displayStaff();
 
     // Getters
     string getStaffID();
     string getStaffName();
-    
+
+    // Setters
+    void setStaffName(string name);
+    void setPosition(string position);
+    void setWorkingTime(string working_time);
+};
+
+// Struct StaffNode
+struct StaffNode {
+    Staff data;
+    StaffNode* next;
 };
 
 // Class Sales Report
@@ -207,6 +238,10 @@ class SalesReport {
         int totalOrders;
 
     public:
+        // Constructor
+        SalesReport() : totalRevenue(0.0), totalOrders(0) {}
+
+        // Methods
         void calculateRevenue();
         void calculateTotalOrders();
         void displayDailyReport();
@@ -233,6 +268,9 @@ class CoffeeShop {
                staffHead(nullptr),
                orderHead(nullptr) {}
 
+        // Destructor
+        ~CoffeeShop();
+
         // Methods
         void manageMenu();
         void manageInventory();
@@ -240,9 +278,10 @@ class CoffeeShop {
         void manageStaff();
         void viewOrderHistory();
         void displayMainMenu();
-
+        void generateSalesReport();
         void loadAllData();
         void saveAllData();
+
 };
 // Please check our proposal description and add more class. Have questions? We can discuss!
 // After writing your own algorithm, please don't commit yet. Save the program to test and debug on your compiler first.
