@@ -8,6 +8,24 @@ using namespace std;
 
 // --- Phase 2: Plan the classes, data records, program menu, and basic linked-list structures. ---
 
+// Struct MenuNode
+struct MenuNode {
+    Menu data;
+    MenuNode* next;
+};
+
+// Struct StaffNode
+struct StaffNode {
+    Staff data;
+    StaffNode* next;
+};
+
+// Struct OrderNode
+struct OrderNode {
+    Order data;
+    OrderNode* next;
+};
+
 // Class Menu
 class Menu {
     // Menu members
@@ -94,9 +112,8 @@ class Inventory {
 
     // Method overload: addInventory(), useInventory(), viewInventory(), checkInventory() & updateInventory()
     void addInventory(string item, int quantity);
-    void useInventory(string item, int quantity);
-    void viewInventory();
-    void checkInventory();
+    void viewInventory(string item, int quantity);
+    void checkInventory(string item);
     void updateInventory();
     void loadInventory();
     void saveInventory();
@@ -112,8 +129,25 @@ class OrderItem {
 
     public:
         // Constructors
-        // Getters and setters
+        OrderItem() : drink_id("N/A"), size('M'),
+              quantity(0), unit_price(0.00) {}
+
+        OrderItem(string drink_id, char size,
+                  int quantity, double unit_price);
+        // Getters 
+        string getDrinkID();
+        char getSize();
+        int getQuantity();
+        double getUnitPrice();
+
+        // Setters
+        void setQuantity(int quantity);
+
         // Calculate subtotal
+        double calculateSubtotal();
+
+        // Displayer
+        void displayItem();
 };
 
 class Order {
@@ -123,26 +157,47 @@ class Order {
         string order_date;
         string order_time;
         string staff_id;
+        string status;
 
         // Linked list of OrderItem objects
 
     public:
         // Constructor
 
+        // Methods
         void addItem();
         void removeItem();
+        void updateItem();
         double calculateTotal();
         void displayOrder();
         void confirmOrder();
+        void cancelOrder();
 };
 
 // Class Staff
 class Staff {
+
     private:
         string staff_id;
         string staff_name;
         string position;
         string working_time;
+
+    public:
+    // Constructor
+    Staff() : staff_id("N/A"), staff_name("N/A"),
+          position("N/A"), working_time("N/A") {}
+
+    // Methods
+    void addStaff();
+    void updateStaff();
+    void removeStaff();
+    void displayStaff();
+
+    // Getters
+    string getStaffID();
+    string getStaffName();
+    
 };
 
 // Class Sales Report
@@ -155,24 +210,39 @@ class SalesReport {
         void calculateRevenue();
         void calculateTotalOrders();
         void displayDailyReport();
+        void displayBestSellingDrink();
+        void displaySalesByDate();
 };
 
 // Class CoffeeShop
 class CoffeeShop {
     private:
         Inventory inventory;
+        MenuNode* menuHead;
+        StaffNode* staffHead;
+        OrderNode* orderHead;
         // Menu
         // Inventory
         // Staff
         // Order history
 
     public:
+
+        // Constructor
+        CoffeeShop() : menuHead(nullptr),
+               staffHead(nullptr),
+               orderHead(nullptr) {}
+
+        // Methods
         void manageMenu();
         void manageInventory();
         void takeOrder();
         void manageStaff();
         void viewOrderHistory();
         void displayMainMenu();
+
+        void loadAllData();
+        void saveAllData();
 };
 // Please check our proposal description and add more class. Have questions? We can discuss!
 // After writing your own algorithm, please don't commit yet. Save the program to test and debug on your compiler first.
