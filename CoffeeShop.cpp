@@ -69,8 +69,7 @@ class Menu {
 
 // Displayer
     void displayMenu();
-
-
+};
 // Struct MenuNode
 struct MenuNode {
     Menu data;
@@ -172,7 +171,7 @@ class OrderItem {
 struct OrderItemNode {
     OrderItem data;
     OrderItemNode* next;
-    // Add
+
     OrderItemNode (OrderItem item) {
         data = item;
         next = nullptr;
