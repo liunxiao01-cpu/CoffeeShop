@@ -69,7 +69,7 @@ class Menu {
 
 // Displayer
     void displayMenu();
-};
+
 
 // Struct MenuNode
 struct MenuNode {
@@ -165,7 +165,7 @@ class OrderItem {
             cout << "Quantity : " << quantity << endl;
             cout << "Price : " << unit_price << endl;
             cout << "Subtotal : " << calculateSubtotal() << endl;
-        }
+        };
 };
 
 // Struct OrderItemNode
@@ -173,10 +173,10 @@ struct OrderItemNode {
     OrderItem data;
     OrderItemNode* next;
     // Add
-    OrderItemNode (OrderItem item){
+    OrderItemNode (OrderItem item) {
         data = item;
         next = nullptr;
-    }
+    };
 };
 
 class Order {
