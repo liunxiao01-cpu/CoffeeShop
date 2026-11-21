@@ -126,20 +126,23 @@ class OrderItem {
                         this->size = size;
                         this->quantity = quantity;
                         this->unit_price = unit_price;
-                  }
+                  };
         // Getters 
-        string getDrinkID(){
+        string getDrinkID() {
             return drink_id;
-        }
-        char getSize(){
+        };
+
+        char getSize() {
             return size;
-        }
-        int getQuantity(){
+        };
+
+        int getQuantity() {
             return quantity;
-        }
-        double getUnitPrice(){
+        };
+
+        double getUnitPrice() {
             return unit_price;
-        }
+        };
 
         // Setters
         void setQuantity(int quantity) {
@@ -148,22 +151,22 @@ class OrderItem {
             } else {
                 cout << "Invalid quantity. Quantity must be more than 0.";
             }
-        }
+        };
 
         // Calculate subtotal
         double calculateSubtotal() {
             return quantity * unit_price;
-        }
+        };
 
         // Displayer
-        void displayItem(){
+        void displayItem() {
             cout << "Drink ID : " << drink_id << endl;
             cout << "Size : " << size << endl;
             cout << "Quantity : " << quantity << endl;
             cout << "Price : " << unit_price << endl;
             cout << "Subtotal : " << calculateSubtotal() << endl;
         }
-}
+};
 
 // Struct OrderItemNode
 struct OrderItemNode {
@@ -174,7 +177,7 @@ struct OrderItemNode {
         data = item;
         next = nullptr;
     }
-}
+};
 
 class Order {
     private:
@@ -198,7 +201,7 @@ class Order {
             staff_id = "N/A";
             status = "Pending";
             itemHead = nullptr;
-        }
+        };
 
         Order(int order_id, string order_date, string order_time, string staff_id){
             this->order_id = order_id;
@@ -208,7 +211,7 @@ class Order {
             total_price = 0.00;
             status = "Pending";
             itemHead = nullptr;
-        }
+        };
 
         // Destructor
         ~Order() {
@@ -219,22 +222,22 @@ class Order {
                 current = current->next;
                 delete temp;
             }
-        }
+        };
 
       // Getters
-        int getOrderID(){
+        int getOrderID() {
             return order_id;
         };
-        string getOrderDate(){
+        string getOrderDate() {
             return order_date;
         };
-        string getOrderTime(){
+        string getOrderTime() {
             return order_time;
         };
-        string getStaffID(){
+        string getStaffID() {
             return staff_id;
         };
-        string getStatus(){
+        string getStatus() {
             return status;
         }
 
@@ -282,7 +285,7 @@ class Order {
                 current->next = newNode;
             }
             cout << "Item added successfully." << endl;
-        }
+        };
 
         void removeItem() {
             if (status != "pending") {
@@ -326,7 +329,7 @@ class Order {
                 current = current->next;
                 cout << "Item not found." << endl;
             }
-        }
+        };
 
         void updateItem() {
             
@@ -363,7 +366,7 @@ class Order {
                 current = current->next;
                 cout << "Item not found." << endl;
             }
-        }
+        };
 
         double calculateTotal() {
             
@@ -375,7 +378,7 @@ class Order {
                 current = current->next;
             }
             return total_price;
-        }
+        };
 
         void displayOrder() {
             cout << "============Display Order============" << endl;
@@ -399,7 +402,7 @@ class Order {
             }
             cout << "===============Display Total===============" << endl;
             cout << "Total: "<< calculateTotal() << endl;
-        }
+        };
 
         void confirmOrder() {
             
@@ -415,7 +418,7 @@ class Order {
             
             status = "confirmed";
             cout << "Order" << order_id << " confirmed" << endl;
-        }
+        };
 
         void cancelOrder() {
             if (status == "cancelled") {
@@ -426,7 +429,7 @@ class Order {
             status = "cancelled";
             cout << "Order #" << order_id << ": " << status << endl;
         }
-}
+};
 
 // Class Staff
 class Staff {
