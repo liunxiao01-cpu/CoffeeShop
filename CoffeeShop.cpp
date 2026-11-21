@@ -138,10 +138,74 @@ class OrderItem {
         void displayItem();
 };
 
+// Class OrderItem
+class OrderItem {
+    private:
+        string drink_id;
+        char size;
+        int quantity;
+        double unit_price;
+
+    public:
+        // Constructors
+        OrderItem() : drink_id("N/A"), size('M'),
+              quantity(0), unit_price(0.00) {}
+
+        OrderItem(string drink_id, char size,
+                  int quantity, double unit_price){
+                        this->drink_id = drink_id;
+                        this->size = size;
+                        this->quantity = quantity;
+                        this->unit_price = unit_price;
+                  };
+        // Getters 
+        //add
+        string getDrinkID(){
+            return drink_id;
+        };
+        char getSize(){
+            return size;
+        };
+        int getQuantity(){
+            return quantity;
+        };
+        double getUnitPrice(){
+            return unit_price;
+        };
+
+        // Setters
+        void setQuantity(int quantity){
+            if(quantity>0){
+                this->quantity = quantity;
+            }else{
+                cout << "Invalid quantity. Quantity must be more than 0.";
+            }
+        };
+
+        // Calculate subtotal
+        double calculateSubtotal(){
+            return quantity * unit_price;
+        };
+
+        // Displayer
+        void displayItem(){
+            cout << "Drink ID : " << drink_id << endl;
+            cout << "Size : " << size << endl;
+            cout << "Quantity : " << quantity << endl;
+            cout << "Price : " << unit_price << endl;
+            cout << "Subtotal : " << calculateSubtotal() << endl;
+        };
+};
+
 // Struct OrderItemNode
 struct OrderItemNode {
     OrderItem data;
     OrderItemNode* next;
+    // Add
+    OrderItemNode (OrderItem item){
+        data = item;
+        next = nullptr;
+    }
 };
 
 class Order {
@@ -168,33 +232,184 @@ class Order {
             itemHead = nullptr;
         }
 
-        Order(int order_id, string order_date,
-              string order_time, string staff_id);
+        Order(int order_id, string order_date, string order_time, string staff_id){
+            this->order_id = order_id;
+            this->order_date = order_date;
+            this->order_time = order_time;
+            this->staff_id = staff_id;
+            total_price = 0.00;
+            status = "Pending";
+            itemHead = nullptr;
+        };
 
         // Destructor
         ~Order();
 
-    	// Getters
-        int getOrderID();
-        string getOrderDate();
-        string getOrderTime();
-        string getStaffID();
-        string getStatus();
+      // Getters
+        // Add
+        int getOrderID(){
+            return order_id;
+        };
+        string getOrderDate(){
+            return order_date;
+        };
+        string getOrderTime(){
+            return order_time;
+        };
+        string getStaffID(){
+            return staff_id;
+        };
+        string getStatus(){
+            return status;
+        };
 
         // Methods
-        void addItem();
-        void removeItem();
-        void updateItem();
-        double calculateTotal();
-        void displayOrder();
-        void confirmOrder();
-        void cancelOrder();
-};
+        void addItem(){
+            if(status!="pending"){
+                cout << "Cannot add item. Order is " << status << endl;
+                return;
+            }
+            string drink_id;
+            char size;
+            int quantity;
+            double unit_price;
 
-// Struct OrderNode
-struct OrderNode {
-    Order data;
-    OrderNode* next;
+        cout << "Enter drink ID:" << endl;
+            cin >> drink_id;
+            cout << "Enter size(S,M,L):" << endl;
+            cin >> size;
+            cout << "Enter quantity:" << endl;
+            cin >> quantity;
+            cout << "Enter unit price:" << endl;
+            cin >> unit_price;
+            if(unit_price<=0||quantity<=0){
+                cout << "Invalid unit price or quantity." << endl;
+                return;
+            }
+            OrderItemNode *newNode = new OrderItemNode(OrderItem(drink_id, size, quantity, unit_price));
+            if(itemHead==nullptr){
+                itemHead = newNode;
+            }else{
+                OrderItemNode *current = itemHead;
+                while(current->next!=nullptr){
+                    current = current->next;
+                }
+                current->next = newNode;
+            }
+            cout << "Item add successfully." << endl;
+        };
+        void removeItem(){
+            if(status!="pending"){
+                cout << "Cannot remove item. Order is " << status << endl;
+                return;
+            }
+            if(itemHead==nullptr){
+                cout << "There are no items to delete." << endl;
+                return;
+            }
+            string drink_id;
+            char size;
+            cout << "Enter Drink ID:" << endl;
+            cin >> drink_id;
+            cout << "Enter the size:" << endl;
+            cin >> size;
+            OrderItemNode *current = itemHead;
+            OrderItemNode *previous = nullptr;
+            while(current!=nullptr){
+                if(current->data.getDrinkID()==drink_id&&current->data.getSize()==size){
+                    if(previous==nullptr){
+                        itemHead = current->next;
+                    }else{
+                        previous->next = current->next;
+                    }
+                    delete current;
+                    cout << "Remove item successfully." << endl;
+                    return;
+                }
+                previous = current;
+                current = current->next;
+                cout << "Item not found." << endl;
+            }
+        };
+        void updateItem(){
+            if(status!="pending"){
+                cout << "Cannot update item. Order is " << status << endl;
+                return;
+            }
+            if(itemHead==nullptr){
+                cout << "There are no items to update." << endl;
+                return;
+            }
+            string drink_id;
+            char size;
+            int newQuantity;
+
+            OrderItemNode *current = itemHead;
+            while(current!=nullptr){
+                if(current->data.getDrinkID()==drink_id&&current->data.getSize()==size){
+                    cout << "Enter the new quantity" << endl;
+                    cin >> newQuantity;
+                    current->data.setQuantity(newQuantity);
+                    cout << "Item update successfully." << endl;
+                    return;
+                }
+                current = current->next;
+                cout << "Item not found." << endl;
+            }
+        };
+        double calculateTotal(){
+            total_price = 0.0;
+            OrderItemNode *current = itemHead;
+            while(current!=nullptr){
+                total_price += current->data.calculateSubtotal();
+                current = current->next;
+            }
+            return total_price;
+        };
+        void displayOrder(){
+            cout << "============Display Order============" << endl;
+            cout << "Order ID: " << order_id << endl;
+            cout << "Date    : " << order_date << endl;
+            cout << "Time    : " << order_time << endl;
+            cout << "Staff     :" << staff_id << endl;
+            cout << "Status     :" << status << endl;
+
+        if(itemHead==nullptr){
+                cout << "No Items to display" << endl;
+            }else{
+                int num = 1;
+                OrderItemNode *current = itemHead;
+                while(current!=nullptr){
+                    cout << "Item " << num++ << ":";
+                    current->data.displayItem();
+                    current = current->next;
+                }
+            }
+            cout << "===============Display Total===============" << endl;
+            cout << "Total: "<< calculateTotal() << endl;
+
+        };
+        void confirmOrder(){
+            if(status!="pending"){
+                cout << "Order is already " << status << endl;
+                return;
+            }
+            if(itemHead==nullptr){
+                cout << "Cannot confirm an empty order." << endl;
+                return;
+            }
+            status = "confirmed";
+            cout << "Order" << order_id << " confirmed" << endl;
+
+        };
+        void cancelOrder(){
+            if (status == "Cancelled") {
+                cout << "Order is already cancelled." << endl;
+                return;
+            }
+            status = "Cancelled";
+            cout << "Order #" << order_id << " cancelled." << endl;
+        };
 };
 
 // Class Staff
