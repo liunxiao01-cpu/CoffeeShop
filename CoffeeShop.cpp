@@ -8,7 +8,6 @@ using namespace std;
 // --- Phase 2: Plan the classes, data records, program menu, and basic linked-list structures. ---
 
 // Class Menu
-// Class Menu
 class Menu {
 private:
     string drink_id;
