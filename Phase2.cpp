@@ -1,134 +1,67 @@
 #include <iostream>
 #include <string>
-#include <fstream>  // CSV file handling
-#include <sstream>  // Parsing CSV records
-#include <cctype>  // Character conversion
 using namespace std;
 
-// --- Phase 2: Plan the classes, data records, program menu, and basic linked-list structures. ---
+// ===================== MENU =====================
 
-// Class Menu
 class Menu {
 private:
     string drink_id;
-    string drink;
+    string drink_name;
     char size;
     double price;
     string type;
 
 public:
-    // Default Constructor
     Menu() {
         drink_id = "N/A";
-        drink = "N/A";
+        drink_name = "N/A";
         size = 'M';
-        price = 0.00;
+        price = 0;
         type = "Ice";
     }
 
-    // Parameterized Constructor
-    Menu(string id, string name, char s = 'M',
-         double p = 0.00, string t = "Ice") {
-
+    Menu(string id, string name, char s, double p, string t) {
         drink_id = id;
-        drink = name;
-
-        if (s == 'S' || s == 'M' || s == 'L')
-            size = s;
-        else
-            size = 'M';
-
-        price = (p >= 0) ? p : 0.00;
-
-        if (t == "Hot" || t == "Ice" || t == "Frappe")
-            type = t;
-        else
-            type = "Ice";
+        drink_name = name;
+        size = s;
+        price = p;
+        type = t;
     }
 
-    // Getters
     string getDrinkID() { return drink_id; }
-    string getDrink() { return drink; }
+    string getDrinkName() { return drink_name; }
     char getSize() { return size; }
     double getPrice() { return price; }
     string getType() { return type; }
 
-    // Setters
-    void setDrink(string newDrink) {
-        drink = newDrink;
-    }
+    void setDrinkName(string name) { drink_name = name; }
+    void setSize(char s) { size = s; }
+    void setPrice(double p) { price = p; }
+    void setType(string t) { type = t; }
 
-    void setSize(char newSize) {
-        if (newSize == 'S' || newSize == 'M' || newSize == 'L')
-            size = newSize;
-        else
-            cout << "Invalid size! Use S, M, or L.\n";
-    }
-
-    void setPrice(double newPrice) {
-        if (newPrice >= 0)
-            price = newPrice;
-        else
-            cout << "Price cannot be negative!\n";
-    }
-
-    void setType(string newType) {
-        if (newType == "Hot" || newType == "Ice" || newType == "Frappe")
-            type = newType;
-        else
-            cout << "Invalid type! Use Hot, Ice, or Frappe.\n";
-    }
-
-    // Display Menu Item
     void displayMenu() {
-        cout << "------------------------\n";
-        cout << "Drink ID : " << drink_id << endl;
-        cout << "Drink    : " << drink << endl;
-        cout << "Size     : " << size << endl;
-        cout << "Price    : $" << price << endl;
-        cout << "Type     : " << type << endl;
-        cout << "------------------------\n";
-    }
-
-    // Update Menu Item
-    void updateMenu() {
-        string newDrink, newType;
-        char newSize;
-        double newPrice;
-
-        cout << "Enter New Drink Name: ";
-        getline(cin >> ws, newDrink);
-
-        cout << "Enter New Size (S/M/L): ";
-        cin >> newSize;
-
-        cout << "Enter New Price: ";
-        cin >> newPrice;
-
-        cout << "Enter New Type (Hot/Ice/Frappe): ";
-        cin >> newType;
-
-        setDrink(newDrink);
-        setSize(newSize);
-        setPrice(newPrice);
-        setType(newType);
-
-        cout << "Menu item updated!\n";
+        cout << "ID: " << drink_id
+             << " | Drink: " << drink_name
+             << " | Size: " << size
+             << " | Price: $" << price
+             << " | Type: " << type << endl;
     }
 };
 
-// Struct MenuNode
+// One node stores one Menu object.
 struct MenuNode {
     Menu data;
     MenuNode* next;
 
-    MenuNode(Menu menu) {
-        data = menu;
+    MenuNode(Menu newMenu) {
+        data = newMenu;
         next = nullptr;
     }
 };
 
-// Class Inventory
+
+// ===================== INVENTORY =====================
 
 class Inventory {
 private:
@@ -141,34 +74,34 @@ private:
     int lemon;
 
 public:
-    // Constructor
-    Inventory() : coffee_pack(0), tea_pack(0),
-                  matcha_pack(0), honey_jar(0),
-                  sugar_sachet(0), milk_bottle(0),
-                  lemon(0) {}
+    Inventory() {
+        coffee_pack = 0;
+        tea_pack = 0;
+        matcha_pack = 0;
+        honey_jar = 0;
+        sugar_sachet = 0;
+        milk_bottle = 0;
+        lemon = 0;
+    }
 
-    // Check Valid Item
     bool isValidItem(string item) {
-        return item == "coffee" || item == "tea" ||
-               item == "matcha" || item == "honey" ||
-               item == "sugar" || item == "milk" ||
+        return item == "coffee" || item == "tea" || item == "matcha" ||
+               item == "honey" || item == "sugar" || item == "milk" ||
                item == "lemon";
     }
 
-    // Get Stock
     int getStock(string item) {
         if (item == "coffee") return coffee_pack;
-        else if (item == "tea") return tea_pack;
-        else if (item == "matcha") return matcha_pack;
-        else if (item == "honey") return honey_jar;
-        else if (item == "sugar") return sugar_sachet;
-        else if (item == "milk") return milk_bottle;
-        else if (item == "lemon") return lemon;
+        if (item == "tea") return tea_pack;
+        if (item == "matcha") return matcha_pack;
+        if (item == "honey") return honey_jar;
+        if (item == "sugar") return sugar_sachet;
+        if (item == "milk") return milk_bottle;
+        if (item == "lemon") return lemon;
 
-        return 0;
+        return -1;
     }
 
-    // Set Stock
     void setStock(string item, int quantity) {
         if (item == "coffee") coffee_pack = quantity;
         else if (item == "tea") tea_pack = quantity;
@@ -179,445 +112,332 @@ public:
         else if (item == "lemon") lemon = quantity;
     }
 
-    // Print Stock Status
-    void printStatus(int stock) {
-        if (stock == 0) {
-            cout << "OUT OF STOCK";
+    void addInventory(string item, int quantity) {
+        if (!isValidItem(item) || quantity <= 0) {
+            cout << "Invalid item or quantity.\n";
+            return;
         }
-        else if (stock <= 5) {
-            cout << "LOW STOCK";
-        }
-        else {
-            cout << "OK";
-        }
+
+        int currentStock = getStock(item);
+        setStock(item, currentStock + quantity);
+        cout << "Inventory updated.\n";
     }
 
-    // Add Inventory
-    void addInventory() {
-        string item;
-        int quantity;
-
-        cout << "\nEnter item (coffee/tea/matcha/honey/sugar/milk/lemon): ";
-        cin >> item;
-
-        if (!isValidItem(item)) {
-            cout << "Item not found.\n";
-            return;
-        }
-
-        cout << "Enter quantity to add: ";
-
-        if (!(cin >> quantity)) {
-            cout << "Invalid quantity.\n";
-            cin.clear();
-            cin.ignore(10000, '\n');
-            return;
-        }
-
-        if (quantity <= 0) {
-            cout << "Quantity must be greater than zero.\n";
-            return;
-        }
-
-        setStock(item, getStock(item) + quantity);
-
-        cout << "Inventory updated successfully!\n";
-        cout << "Current stock: " << getStock(item) << endl;
-    }
-
-    // Update Inventory
-    void updateInventory() {
-        string item;
-        int quantity;
-
-        cout << "\nEnter item to update: ";
-        cin >> item;
-
-        if (!isValidItem(item)) {
-            cout << "Item not found.\n";
-            return;
-        }
-
-        cout << "Enter new quantity: ";
-
-        if (!(cin >> quantity)) {
-            cout << "Invalid quantity.\n";
-            cin.clear();
-            cin.ignore(10000, '\n');
-            return;
-        }
-
-        if (quantity < 0) {
-            cout << "Quantity cannot be negative.\n";
+    void updateInventory(string item, int quantity) {
+        if (!isValidItem(item) || quantity < 0) {
+            cout << "Invalid item or quantity.\n";
             return;
         }
 
         setStock(item, quantity);
-
-        cout << "Stock updated successfully!\n";
+        cout << "Inventory updated.\n";
     }
 
-    // View Inventory
+    void checkInventory(string item) {
+        if (!isValidItem(item)) {
+            cout << "Item not found.\n";
+            return;
+        }
+
+        int stock = getStock(item);
+        cout << item << ": " << stock << " units";
+
+        if (stock == 0) cout << " (OUT OF STOCK)";
+        else if (stock <= 5) cout << " (LOW STOCK)";
+        else cout << " (OK)";
+
+        cout << endl;
+    }
+
     void viewInventory() {
-        cout << "\n========== INVENTORY ==========\n";
-
-        cout << "Coffee : " << coffee_pack << " | ";
-        printStatus(coffee_pack);
-        cout << endl;
-
-        cout << "Tea    : " << tea_pack << " | ";
-        printStatus(tea_pack);
-        cout << endl;
-
-        cout << "Matcha : " << matcha_pack << " | ";
-        printStatus(matcha_pack);
-        cout << endl;
-
-        cout << "Honey  : " << honey_jar << " | ";
-        printStatus(honey_jar);
-        cout << endl;
-
-        cout << "Sugar  : " << sugar_sachet << " | ";
-        printStatus(sugar_sachet);
-        cout << endl;
-
-        cout << "Milk   : " << milk_bottle << " | ";
-        printStatus(milk_bottle);
-        cout << endl;
-
-        cout << "Lemon  : " << lemon << " | ";
-        printStatus(lemon);
-        cout << endl;
-
-        cout << "================================\n";
+        checkInventory("coffee");
+        checkInventory("tea");
+        checkInventory("matcha");
+        checkInventory("honey");
+        checkInventory("sugar");
+        checkInventory("milk");
+        checkInventory("lemon");
     }
 };
 
-// Class OrderItem
+
+// ===================== ORDER ITEM =====================
+
 class OrderItem {
-    private:
-        string drink_id;
-        char size;
-        int quantity;
-        double unit_price;
+private:
+    string drink_id;
+    char size;
+    int quantity;
+    double unit_price;
 
-    public:
-        // Constructors
-        OrderItem() : drink_id("N/A"), size('M'),
-              quantity(0), unit_price(0.00) {}
+public:
+    OrderItem() {
+        drink_id = "N/A";
+        size = 'M';
+        quantity = 0;
+        unit_price = 0;
+    }
 
-        OrderItem(string drink_id, char size,
-                  int quantity, double unit_price){
-                        this->drink_id = drink_id;
-                        this->size = size;
-                        this->quantity = quantity;
-                        this->unit_price = unit_price;
-                  };
-        // Getters 
-        string getDrinkID() {
-            return drink_id;
-        };
+    OrderItem(string id, char s, int q, double price) {
+        drink_id = id;
+        size = s;
+        quantity = q;
+        unit_price = price;
+    }
 
-        char getSize() {
-            return size;
-        };
+    string getDrinkID() { return drink_id; }
+    char getSize() { return size; }
+    int getQuantity() { return quantity; }
+    double getUnitPrice() { return unit_price; }
 
-        int getQuantity() {
-            return quantity;
-        };
+    void setQuantity(int q) {
+        if (q > 0) quantity = q;
+    }
 
-        double getUnitPrice() {
-            return unit_price;
-        };
+    double calculateSubtotal() {
+        return quantity * unit_price;
+    }
 
-        // Setters
-        void setQuantity(int quantity) {
-            if (quantity > 0) {
-                this->quantity = quantity;
-            } else {
-                cout << "Invalid quantity. Quantity must be more than 0.";
-            }
-        };
-
-        // Calculate subtotal
-        double calculateSubtotal() {
-            return quantity * unit_price;
-        };
-
-        // Displayer
-        void displayItem() {
-            cout << "Drink ID : " << drink_id << endl;
-            cout << "Size : " << size << endl;
-            cout << "Quantity : " << quantity << endl;
-            cout << "Price : " << unit_price << endl;
-            cout << "Subtotal : " << calculateSubtotal() << endl;
-        };
+    void displayItem() {
+        cout << drink_id << " | Size: " << size
+             << " | Quantity: " << quantity
+             << " | Unit price: $" << unit_price
+             << " | Subtotal: $" << calculateSubtotal() << endl;
+    }
 };
 
-// Struct OrderItemNode
+// One order can contain many order items.
 struct OrderItemNode {
     OrderItem data;
     OrderItemNode* next;
 
-    OrderItemNode (OrderItem item) {
+    OrderItemNode(OrderItem item) {
         data = item;
         next = nullptr;
-    };
+    }
 };
+
+
+// ===================== ORDER =====================
 
 class Order {
-    private:
-        int order_id;
-        double total_price;
-        string order_date;
-        string order_time;
-        string staff_id;
-        string status;
+private:
+    int order_id;
+    string order_date;
+    string order_time;
+    string staff_id;
+    string status;
+    double total_price;
 
-        // Linked list of OrderItem objects
-        OrderItemNode* itemHead;
+    OrderItemNode* itemHead;
 
-    public:
-        // Constructor
-        Order() {
-            order_id = 0;
-            total_price = 0.00;
-            order_date = "N/A";
-            order_time = "N/A";
-            staff_id = "N/A";
-            status = "Pending";
-            itemHead = nullptr;
-        };
+public:
+    Order() {
+        order_id = 0;
+        order_date = "N/A";
+        order_time = "N/A";
+        staff_id = "N/A";
+        status = "Pending";
+        total_price = 0;
+        itemHead = nullptr;
+    }
 
-        Order(int order_id, string order_date, string order_time, string staff_id){
-            this->order_id = order_id;
-            this->order_date = order_date;
-            this->order_time = order_time;
-            this->staff_id = staff_id;
-            total_price = 0.00;
-            status = "Pending";
-            itemHead = nullptr;
-        };
+    Order(int id, string date, string time, string staff) {
+        order_id = id;
+        order_date = date;
+        order_time = time;
+        staff_id = staff;
+        status = "Pending";
+        total_price = 0;
+        itemHead = nullptr;
+    }
 
-        // Destructor
-        ~Order() {
-            OrderItemNode* current = itemHead;
+    // Delete all item nodes belonging to this order.
+    ~Order() {
+        OrderItemNode* current = itemHead;
 
-            while (current != nullptr) {
-                OrderItemNode* temp = current;
-                current = current->next;
-                delete temp;
-            }
-        };
+        while (current != nullptr) {
+            OrderItemNode* temp = current;
+            current = current->next;
+            delete temp;
+        }
+    }
 
-      // Getters
-        int getOrderID() {
-            return order_id;
-        };
-        string getOrderDate() {
-            return order_date;
-        };
-        string getOrderTime() {
-            return order_time;
-        };
-        string getStaffID() {
-            return staff_id;
-        };
-        string getStatus() {
-            return status;
+    int getOrderID() { return order_id; }
+    string getOrderDate() { return order_date; }
+    string getOrderTime() { return order_time; }
+    string getStaffID() { return staff_id; }
+    string getStatus() { return status; }
+
+    double calculateTotal() {
+        total_price = 0;
+        OrderItemNode* current = itemHead;
+
+        while (current != nullptr) {
+            total_price += current->data.calculateSubtotal();
+            current = current->next;
         }
 
-        // Methods
-        void addItem() {
-            
-            if (status != "pending") {
-                cout << "Items can't be added. An order is " << status << "." << endl;
-                return;
-            }
-            
-            string drink_id;
-            char size;
-            int quantity;
-            double unit_price;
+        return total_price;
+    }
 
-            cout << "Enter drink ID: ";
-            cin >> drink_id;
-            cout << "Enter size(S,M,L): ";
-            cin >> size;
-            cout << "Enter quantity: ";
-            cin >> quantity;
-            cout << "Enter unit price: ";
-            cin >> unit_price;
-            
-            if (unit_price <= 0) {
-                cout << "Invalid unit price." << endl;
-                return;
-            }
-            
-            if (quantity < 0) {
-                cout << "Invalid quantity." << endl;
-                return;
-            }
-            
-            OrderItemNode *newNode = new OrderItemNode(OrderItem(drink_id, size, quantity, unit_price));
-            
-            if (itemHead == nullptr) {
-                itemHead = newNode;
-            } else {
-                OrderItemNode *current = itemHead;
-                while (current->next!=nullptr) {
-                    current = current->next;
-                }
-                current->next = newNode;
-            }
-            cout << "Item added successfully." << endl;
-        };
+    void addItem(string id, char s, int quantity, double price) {
+        if (status != "Pending") {
+            cout << "This order can no longer be changed.\n";
+            return;
+        }
 
-        void removeItem() {
-            if (status != "pending") {
-                cout << "Cannot remove item. Order is " << status << "." << endl;
-                return;
-            }
-            
-            if (itemHead == nullptr) {
-                cout << "There is not any item to delete." << endl;
-                return;
-            }
-            
-            string drink_id;
-            char size;
-            cout << "Enter Drink ID: ";
-            cin >> drink_id;
-            cout << "Enter the size: ";
-            cin >> size;
-            
-            OrderItemNode *current = itemHead;
-            OrderItemNode *previous = nullptr;
-            
-            while (current!=nullptr) {
-                
-                if (
-                    current->data.getDrinkID() == drink_id 
-                    && 
-                    current->data.getSize() == size
-                    ) {
-                    
-                    if (previous == nullptr) {
-                        itemHead = current->next;
-                    } else {
-                        previous->next = current->next;
-                    }
-                    delete current;
-                    cout << "Remove item successfully." << endl;
-                    return;
-                }
-                previous = current;
-                current = current->next;
-                cout << "Item not found." << endl;
-            }
-        };
+        if (quantity <= 0 || price <= 0) {
+            cout << "Invalid quantity or price.\n";
+            return;
+        }
 
-        void updateItem() {
-            
-            if (status != "pending") {
-                cout << "Cannot update item. Order is " << status << "." << endl;
-                return;
-            }
-            
-            if (itemHead == nullptr) {
-                cout << "There is not any item to update." << endl;
-                return;
-            }
-            
-            string drink_id;
-            char size;
-            int newQuantity;
-
-            OrderItemNode *current = itemHead;
-            
-            while (current != nullptr)  {
-                
-                if (
-                    current->data.getDrinkID() == drink_id
-                    &&
-                    current->data.getSize() == size
-                    ) {
-                    
-                    cout << "Enter new stock quantity: ";
-                    cin >> newQuantity;
-                    current->data.setQuantity(newQuantity);
-                    cout << "Item updated successfully." << endl;
-                    return;
-                }
-                current = current->next;
-                cout << "Item not found." << endl;
-            }
-        };
-
-        double calculateTotal() {
-            
-            total_price = 0.0;
-            OrderItemNode *current = itemHead;
-            
-            while (current != nullptr) {
-                total_price += current->data.calculateSubtotal();
-                current = current->next;
-            }
-            return total_price;
-        };
-
-        void displayOrder() {
-            cout << "============Display Order============" << endl;
-            cout << "Order ID: " << order_id << endl;
-            cout << "Date    : " << order_date << endl;
-            cout << "Time    : " << order_time << endl;
-            cout << "Staff     :" << staff_id << endl;
-            cout << "Status     :" << status << endl;
+        OrderItem newItem(id, s, quantity, price);
+        OrderItemNode* newNode = new OrderItemNode(newItem);
 
         if (itemHead == nullptr) {
-            cout << "No Item to display." << endl;
+            itemHead = newNode;
         } else {
-            int num = 1;
-            OrderItemNode *current = itemHead;
-            
-            while (current != nullptr) {
-                    cout << "Item " << num++ << ":";
-                    current->data.displayItem();
-                    current = current->next;
-                }
-            }
-            cout << "===============Display Total===============" << endl;
-            cout << "Total: "<< calculateTotal() << endl;
-        };
+            OrderItemNode* current = itemHead;
 
-        void confirmOrder() {
-            
-            if (status != "pending") {
-                cout << "Order is already " << status << "." << endl;
-                return;
+            while (current->next != nullptr) {
+                current = current->next;
             }
-            
-            if (itemHead == nullptr) {
-                cout << "Cannot confirm an empty order." << endl;
-                return;
-            }
-            
-            status = "confirmed";
-            cout << "Order" << order_id << " confirmed" << endl;
-        };
 
-        void cancelOrder() {
-            if (status == "cancelled") {
-                cout << "Order is already cancelled." << endl;
-                return;
-            }
-            
-            status = "cancelled";
-            cout << "Order #" << order_id << ": " << status << endl;
+            current->next = newNode;
         }
+
+        cout << "Item added to order.\n";
+    }
+
+    void viewItems() {
+        if (itemHead == nullptr) {
+            cout << "This order has no items.\n";
+            return;
+        }
+
+        OrderItemNode* current = itemHead;
+
+        while (current != nullptr) {
+            current->data.displayItem();
+            current = current->next;
+        }
+    }
+
+    void removeItem(string id, char s) {
+        if (status != "Pending") {
+            cout << "This order can no longer be changed.\n";
+            return;
+        }
+
+        OrderItemNode* current = itemHead;
+        OrderItemNode* previous = nullptr;
+
+        while (current != nullptr) {
+            if (current->data.getDrinkID() == id &&
+                current->data.getSize() == s) {
+
+                if (previous == nullptr) {
+                    itemHead = current->next;
+                } else {
+                    previous->next = current->next;
+                }
+
+                delete current;
+                cout << "Item removed.\n";
+                return;
+            }
+
+            previous = current;
+            current = current->next;
+        }
+
+        cout << "Item not found.\n";
+    }
+
+    void updateItem(string id, char s, int newQuantity) {
+        if (status != "Pending") {
+            cout << "This order can no longer be changed.\n";
+            return;
+        }
+
+        OrderItemNode* current = itemHead;
+
+        while (current != nullptr) {
+            if (current->data.getDrinkID() == id &&
+                current->data.getSize() == s) {
+
+                current->data.setQuantity(newQuantity);
+                cout << "Item quantity updated.\n";
+                return;
+            }
+
+            current = current->next;
+        }
+
+        cout << "Item not found.\n";
+    }
+
+    void confirmOrder() {
+        if (itemHead == nullptr) {
+            cout << "Cannot confirm an empty order.\n";
+            return;
+        }
+
+        if (status == "Pending") {
+            status = "Confirmed";
+            cout << "Order confirmed.\n";
+        } else {
+            cout << "Order is not pending.\n";
+        }
+    }
+
+    void cancelOrder() {
+        if (status == "Completed") {
+            cout << "A completed order cannot be cancelled.\n";
+            return;
+        }
+
+        status = "Cancelled";
+        cout << "Order cancelled.\n";
+    }
+
+    void completeOrder() {
+        if (status == "Confirmed") {
+            status = "Completed";
+            cout << "Order completed.\n";
+        } else {
+            cout << "Only confirmed orders can be completed.\n";
+        }
+    }
+
+    void displayOrder() {
+        cout << "\nOrder ID: " << order_id << endl;
+        cout << "Date: " << order_date << endl;
+        cout << "Time: " << order_time << endl;
+        cout << "Staff ID: " << staff_id << endl;
+        cout << "Status: " << status << endl;
+
+        viewItems();
+
+        cout << "Total: $" << calculateTotal() << endl;
+    }
 };
 
-// ================= STAFF CLASS =================
+// The node stores a pointer to an Order.
+// CoffeeShop creates and deletes the Order objects.
+struct OrderNode {
+    Order* data;
+    OrderNode* next;
+
+    OrderNode(Order* newOrder) {
+        data = newOrder;
+        next = nullptr;
+    }
+};
+
+
+// ===================== STAFF =====================
 
 class Staff {
 private:
@@ -627,116 +447,74 @@ private:
     string working_time;
 
 public:
-    // Default Constructor
-    Staff() : staff_id("N/A"), staff_name("N/A"),
-              position("N/A"), working_time("N/A") {}
-
-    // Parameterized Constructor
-    Staff(string id, string name, string pos, string time)
-        : staff_id(id), staff_name(name),
-          position(pos), working_time(time) {}
-
-    // Getters
-    string getStaffID() {
-        return staff_id;
+    Staff() {
+        staff_id = "N/A";
+        staff_name = "N/A";
+        position = "N/A";
+        working_time = "N/A";
     }
 
-    string getStaffName() {
-        return staff_name;
-    }
-
-    // Setters
-    void setStaffName(string name) {
+    Staff(string id, string name, string job, string time) {
+        staff_id = id;
         staff_name = name;
-    }
-
-    void setPosition(string pos) {
-        position = pos;
-    }
-
-    void setWorkingTime(string time) {
+        position = job;
         working_time = time;
     }
 
-    // Display One Staff Member
+    string getStaffID() { return staff_id; }
+    string getStaffName() { return staff_name; }
+
+    void setStaffName(string name) { staff_name = name; }
+    void setPosition(string job) { position = job; }
+    void setWorkingTime(string time) { working_time = time; }
+
     void displayStaff() {
-        cout << "------------------------\n"
-             << "Staff ID    : " << staff_id << "\n"
-             << "Name        : " << staff_name << "\n"
-             << "Position    : " << position << "\n"
-             << "Working Time: " << working_time << "\n"
-             << "------------------------\n";
+        cout << "Staff ID: " << staff_id << endl;
+        cout << "Name: " << staff_name << endl;
+        cout << "Position: " << position << endl;
+        cout << "Working time: " << working_time << endl;
     }
 
-    // Update Staff Information
-    void updateStaff() {
-        cout << "Enter New Staff Name: ";
-        getline(cin >> ws, staff_name);
-
-        cout << "Enter New Position: ";
-        getline(cin, position);
-
-        cout << "Enter New Working Time: ";
-        getline(cin, working_time);
-
-        cout << "Staff information updated!\n";
+    void updateStaff(string name, string job, string time) {
+        staff_name = name;
+        position = job;
+        working_time = time;
     }
 };
-
-// ================= STAFF NODE =================
 
 struct StaffNode {
     Staff data;
     StaffNode* next;
 
-    StaffNode(Staff staff)
-        : data(staff), next(nullptr) {}
+    StaffNode(Staff newStaff) {
+        data = newStaff;
+        next = nullptr;
+    }
 };
 
-// Class Sales Report
+
+// ===================== SALES REPORT =====================
+
 class SalesReport {
 private:
     double totalRevenue;
     int totalOrders;
 
 public:
-    // Constructor
-    SalesReport() : totalRevenue(0.0), totalOrders(0) {}
-
-    // Getters
-    double getTotalRevenue() {
-        return totalRevenue;
+    SalesReport() {
+        totalRevenue = 0;
+        totalOrders = 0;
     }
 
-    int getTotalOrders() {
-        return totalOrders;
-    }
-
-    // Calculate Revenue
-    void calculateRevenue(OrderNode* orderHead) {
-        totalRevenue = 0.0;
-
-        OrderNode* current = orderHead;
-
-        while (current != nullptr) {
-
-            if (current->data.getStatus() == "Completed") {
-                totalRevenue += current->data.getTotalPrice();
-            }
-
-            current = current->next;
-        }
-    }
-
-    // Calculate Total Orders
-    void calculateTotalOrders(OrderNode* orderHead) {
+    void calculateReport(OrderNode* orderHead) {
+        totalRevenue = 0;
         totalOrders = 0;
 
         OrderNode* current = orderHead;
 
         while (current != nullptr) {
-
-            if (current->data.getStatus() == "Completed") {
+            if (current->data->getStatus() == "Completed") {
+                totalRevenue += current->data->calculateTotal();
                 totalOrders++;
             }
 
@@ -744,526 +522,314 @@ public:
         }
     }
 
-    // Display Daily Report
-    void displayDailyReport() {
-        cout << "\n====== DAILY SALES REPORT ======\n";
-
-        cout << "Total Orders  : " << totalOrders << endl;
-        cout << "Total Revenue : $" << totalRevenue << endl;
-
-        cout << "================================\n";
-    }
-
-    // Display Best-Selling Drink
-    void displayBestSellingDrink(OrderNode* orderHead) {
-        string bestDrinkID = "N/A";
-        int maxQuantity = 0;
-
-        OrderNode* currentOrder = orderHead;
-
-        while (currentOrder != nullptr) {
-
-            if (currentOrder->data.getStatus() == "Completed") {
-
-                OrderItemNode* currentItem =
-                    currentOrder->data.getItemHead();
-
-                while (currentItem != nullptr) {
-
-                    string drinkID = currentItem->data.getDrinkID();
-                    int totalQuantity = 0;
-
-                    OrderNode* searchOrder = orderHead;
-
-                    while (searchOrder != nullptr) {
-
-                        if (searchOrder->data.getStatus() == "Completed") {
-
-                            OrderItemNode* searchItem =
-                                searchOrder->data.getItemHead();
-
-                            while (searchItem != nullptr) {
-
-                                if (searchItem->data.getDrinkID() == drinkID) {
-                                    totalQuantity +=
-                                        searchItem->data.getQuantity();
-                                }
-
-                                searchItem = searchItem->next;
-                            }
-                        }
-
-                        searchOrder = searchOrder->next;
-                    }
-
-                    if (totalQuantity > maxQuantity) {
-                        maxQuantity = totalQuantity;
-                        bestDrinkID = drinkID;
-                    }
-
-                    currentItem = currentItem->next;
-                }
-            }
-
-            currentOrder = currentOrder->next;
-        }
-
-        cout << "\n====== BEST-SELLING DRINK ======\n";
-
-        if (maxQuantity == 0) {
-            cout << "No completed orders found.\n";
-        }
-        else {
-            cout << "Drink ID      : " << bestDrinkID << endl;
-            cout << "Quantity Sold : " << maxQuantity << endl;
-        }
-
-        cout << "================================\n";
-    }
-
-    // Display Sales By Date
-    void displaySalesByDate(OrderNode* orderHead, string date) {
-        double revenue = 0.0;
-        int count = 0;
-
-        OrderNode* current = orderHead;
-
-        while (current != nullptr) {
-
-            if (current->data.getOrderDate() == date &&
-                current->data.getStatus() == "Completed") {
-
-                revenue += current->data.getTotalPrice();
-                count++;
-            }
-
-            current = current->next;
-        }
-
-        cout << "\n====== SALES BY DATE ======\n";
-        cout << "Date          : " << date << endl;
-        cout << "Total Orders  : " << count << endl;
-        cout << "Total Revenue : $" << revenue << endl;
-        cout << "===========================\n";
+    void displayReport() {
+        cout << "\n===== SALES REPORT =====\n";
+        cout << "Completed orders: " << totalOrders << endl;
+        cout << "Total revenue: $" << totalRevenue << endl;
     }
 };
 
-// Class CoffeeShop
+
+// ===================== COFFEE SHOP =====================
 
 class CoffeeShop {
 private:
     Inventory inventory;
 
-    // Linked List Head Pointers
+    // Each pointer stores the first node of a linked list.
     MenuNode* menuHead;
     StaffNode* staffHead;
     OrderNode* orderHead;
 
-    // Staff Helper Methods
-    void addStaff();
-    void removeStaff();
-    void viewStaff();
-    void updateStaffRecord();
+    int nextOrderID;
+
+    // Administrator password.
+    string adminPassword;
+
+    // Ask for the password whenever an administrator function is used.
+    bool checkAdminPassword() {
+        string enteredPassword;
+
+        cout << "Enter administrator password: ";
+        cin >> enteredPassword;
+
+        if (enteredPassword == adminPassword) {
+            return true;
+        }
+
+        cout << "Incorrect password. Access denied.\\n";
+        return false;
+    }
 
 public:
-    // Constructor
-    CoffeeShop() : menuHead(nullptr),
-                   staffHead(nullptr),
-                   orderHead(nullptr) {}
+    CoffeeShop() {
+        menuHead = nullptr;
+        staffHead = nullptr;
+        orderHead = nullptr;
+        nextOrderID = 1;
 
-    // Prevent unsafe copying
-    CoffeeShop(const CoffeeShop&) = delete;
-    CoffeeShop& operator=(const CoffeeShop&) = delete;
-
-    // Destructor
-    
-~CoffeeShop() {
-
-    // Delete Menu Linked List
-    MenuNode* currentMenu = menuHead;
-
-    while (currentMenu != nullptr) {
-        MenuNode* temp = currentMenu;
-        currentMenu = currentMenu->next;
-        delete temp;
+        // Default administrator password.
+        adminPassword = "admin123";
     }
 
-    // Delete Staff Linked List
-    StaffNode* currentStaff = staffHead;
+    // ---------- ADMINISTRATOR SECURITY ----------
 
-    while (currentStaff != nullptr) {
-        StaffNode* temp = currentStaff;
-        currentStaff = currentStaff->next;
-        delete temp;
-    }
-
-    // Delete Order Linked List
-    OrderNode* currentOrder = orderHead;
-
-    while (currentOrder != nullptr) {
-        OrderNode* temp = currentOrder;
-        currentOrder = currentOrder->next;
-        delete temp;
-    }
-
-    cout << "CoffeeShop memory released.\n";
-}
-
-// General Method
-void addStaff() {
-    string id, name, pos, time;
-
-    cout << "\nEnter Staff ID: ";
-    cin >> id;
-
-    // Check duplicate ID
-    StaffNode* check = staffHead;
-
-    while (check != nullptr) {
-        if (check->data.getStaffID() == id) {
-            cout << "Staff ID already exists!\n";
-            return;
-        }
-        check = check->next;
-    }
-
-    cout << "Enter Staff Name: ";
-    getline(cin >> ws, name);
-
-    cout << "Enter Position: ";
-    getline(cin, pos);
-
-    cout << "Enter Working Time: ";
-    getline(cin, time);
-
-    Staff newStaff(id, name, pos, time);
-
-    StaffNode* newNode = new StaffNode(newStaff);
-
-    newNode->next = staffHead;
-    staffHead = newNode;
-
-    cout << "Staff added successfully!\n";
-}
-
-
-void viewStaff() {
-    StaffNode* current = staffHead;
-
-    if (current == nullptr) {
-        cout << "No staff records found.\n";
-        return;
-    }
-
-    while (current != nullptr) {
-        current->data.displayStaff();
-        current = current->next;
-    }
-}
-
-
-void updateStaffRecord() {
-    string id;
-
-    cout << "Enter Staff ID to update: ";
-    cin >> id;
-
-    StaffNode* current = staffHead;
-
-    while (current != nullptr) {
-
-        if (current->data.getStaffID() == id) {
-            current->data.updateStaff();
+    void changeAdminPassword() {
+        // The current password must be correct before changing it.
+        if (checkAdminPassword() == false) {
             return;
         }
 
-        current = current->next;
+        string newPassword;
+
+        cout << "Enter new password: ";
+        cin >> newPassword;
+
+        if (newPassword.length() < 6) {
+            cout << "Password must contain at least 6 characters.\\n";
+            return;
+        }
+
+        adminPassword = newPassword;
+        cout << "Administrator password changed successfully.\\n";
     }
 
-    cout << "Staff ID not found!\n";
-}
+    // Free all nodes when the CoffeeShop object is destroyed.
+    ~CoffeeShop() {
+        MenuNode* menuCurrent = menuHead;
+        while (menuCurrent != nullptr) {
+            MenuNode* temp = menuCurrent;
+            menuCurrent = menuCurrent->next;
+            delete temp;
+        }
 
+        StaffNode* staffCurrent = staffHead;
+        while (staffCurrent != nullptr) {
+            StaffNode* temp = staffCurrent;
+            staffCurrent = staffCurrent->next;
+            delete temp;
+        }
 
-void removeStaff() {
-    string id;
+        OrderNode* orderCurrent = orderHead;
+        while (orderCurrent != nullptr) {
+            OrderNode* temp = orderCurrent;
+            orderCurrent = orderCurrent->next;
 
-    cout << "Enter Staff ID to remove: ";
-    cin >> id;
+            delete temp->data;  // Order deletes its own OrderItem nodes.
+            delete temp;
+        }
+    }
 
-    StaffNode* current = staffHead;
-    StaffNode* previous = nullptr;
+    // ---------- MENU LINKED LIST ----------
 
-    while (current != nullptr) {
+    void addMenuItem(Menu newMenu) {
+        if (checkAdminPassword() == false) return;
+        MenuNode* newNode = new MenuNode(newMenu);
 
-        if (current->data.getStaffID() == id) {
+        if (menuHead == nullptr) {
+            menuHead = newNode;
+        } else {
+            MenuNode* current = menuHead;
 
-            if (previous == nullptr) {
-                staffHead = current->next;
-            }
-            else {
-                previous->next = current->next;
+            while (current->next != nullptr) {
+                current = current->next;
             }
 
-            delete current;
+            current->next = newNode;
+        }
 
-            cout << "Staff removed successfully!\n";
+        cout << "Menu item added.\n";
+    }
+
+    void viewMenu() {
+        if (menuHead == nullptr) {
+            cout << "Menu is empty.\n";
             return;
         }
 
-        previous = current;
-        current = current->next;
+        MenuNode* current = menuHead;
+
+        while (current != nullptr) {
+            current->data.displayMenu();
+            current = current->next;
+        }
     }
 
-    cout << "Staff ID not found!\n";
-}
+    void removeMenuItem(string id) {
+        if (checkAdminPassword() == false) return;
+        MenuNode* current = menuHead;
+        MenuNode* previous = nullptr;
 
+        while (current != nullptr) {
+            if (current->data.getDrinkID() == id) {
+                if (previous == nullptr) {
+                    menuHead = current->next;
+                } else {
+                    previous->next = current->next;
+                }
 
-void manageStaff() {
-    int choice;
+                delete current;
+                cout << "Menu item removed.\n";
+                return;
+            }
 
-    do {
-        cout << "\n====== STAFF MANAGEMENT ======\n";
-        cout << "1. Add Staff\n";
-        cout << "2. Remove Staff\n";
-        cout << "3. Update Staff\n";
-        cout << "4. View Staff\n";
-        cout << "0. Back to Main Menu\n";
-        cout << "Enter Choice: ";
-
-        cin >> choice;
-
-        switch (choice) {
-            case 1:
-                addStaff();
-                break;
-
-            case 2:
-                removeStaff();
-                break;
-
-            case 3:
-                updateStaffRecord();
-                break;
-
-            case 4:
-                viewStaff();
-                break;
-
-            case 0:
-                cout << "Returning to Main Menu...\n";
-                break;
-
-            default:
-                cout << "Invalid choice!\n";
+            previous = current;
+            current = current->next;
         }
 
-    } while (choice != 0);
-}
-
-
-void viewOrderHistory() {
-    OrderNode* current = orderHead;
-
-    if (current == nullptr) {
-        cout << "No order history found.\n";
-        return;
+        cout << "Menu item not found.\n";
     }
 
-    while (current != nullptr) {
-        current->data.displayOrder();
-        current = current->next;
-    }
-}
+    // ---------- INVENTORY ----------
 
+    void manageInventory() {
+        if (checkAdminPassword() == false) return;
+        int choice;
+        string item;
+        int quantity;
 
-void generateSalesReport() {
-    SalesReport report;
-
-    // Calculate revenue and total orders
-    report.calculateRevenue(orderHead);
-    report.calculateTotalOrders(orderHead);
-
-    // Display daily report summary
-    report.displayDailyReport();
-
-    // Display best-selling drink
-    report.displayBestSellingDrink(orderHead);
-
-    // Display sales by date
-    string date;
-
-    cout << "\nEnter Date (YYYY-MM-DD): ";
-    cin >> date;
-
-    report.displaySalesByDate(orderHead, date);
-}
-
-void manageInventory() {
-    int choice;
-
-    do {
-        cout << "\n====== INVENTORY MANAGEMENT ======\n";
-        cout << "1. View Inventory\n";
-        cout << "2. Add Inventory\n";
-        cout << "3. Update Inventory\n";
-        cout << "0. Back to Main Menu\n";
-        cout << "Enter Choice: ";
-
+        cout << "\n1. Add stock\n";
+        cout << "2. Set stock quantity\n";
+        cout << "3. View inventory\n";
+        cout << "Choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                inventory.viewInventory();
-                break;
+        if (choice == 1 || choice == 2) {
+            cout << "Enter item name: ";
+            cin >> item;
+            cout << "Enter quantity: ";
+            cin >> quantity;
 
-            case 2:
-                inventory.addInventory();
-                break;
+            if (choice == 1) inventory.addInventory(item, quantity);
+            else inventory.updateInventory(item, quantity);
+        } else if (choice == 3) {
+            inventory.viewInventory();
+        } else {
+            cout << "Invalid choice.\n";
+        }
+    }
 
-            case 3:
-                inventory.updateInventory();
-                break;
+    // ---------- STAFF LINKED LIST ----------
 
-            case 0:
-                cout << "Returning to Main Menu...\n";
-                break;
+    void addStaff(Staff newStaff) {
+        if (checkAdminPassword() == false) return;
+        StaffNode* newNode = new StaffNode(newStaff);
 
-            default:
-                cout << "Invalid choice!\n";
+        if (staffHead == nullptr) {
+            staffHead = newNode;
+        } else {
+            StaffNode* current = staffHead;
+
+            while (current->next != nullptr) {
+                current = current->next;
+            }
+
+            current->next = newNode;
         }
 
-    } while (choice != 0);
-}
-void loadAllData() {
-    cout << "\nLoading Coffee Shop Data...\n";
+        cout << "Staff member added.\n";
+    }
 
-    inventory.loadInventory();
-
-    // TODO: Load Menu linked list from menu.csv
-    // TODO: Load Staff linked list from staff.csv
-    // TODO: Load Order history from order.csv
-
-    cout << "Data loading completed.\n";
-}
-
-void saveAllData() {
-    cout << "\nSaving Coffee Shop Data...\n";
-
-    inventory.saveInventory();
-
-    // TODO: Save Menu linked list to menu.csv
-    // TODO: Save Staff linked list to staff.csv
-    // TODO: Save Order history to order.csv
-
-    cout << "Data saving completed.\n";
-}
-
-void addMenu() {
-    string id, name, type;
-    char size;
-    double price;
-
-    cout << "\nEnter Drink ID: ";
-    cin >> id;
-
-    // Check duplicate ID
-    MenuNode* check = menuHead;
-
-    while (check != nullptr) {
-        if (check->data.getDrinkID() == id) {
-            cout << "Drink ID already exists!\n";
+    void viewStaff() {
+        if (checkAdminPassword() == false) return;
+        if (staffHead == nullptr) {
+            cout << "There is no staff record.\n";
             return;
         }
-        check = check->next;
+
+        StaffNode* current = staffHead;
+
+        while (current != nullptr) {
+            current->data.displayStaff();
+            current = current->next;
+        }
     }
 
-    cout << "Enter Drink Name: ";
-    getline(cin >> ws, name);
+    void removeStaff(string id) {
+        if (checkAdminPassword() == false) return;
+        StaffNode* current = staffHead;
+        StaffNode* previous = nullptr;
 
-    cout << "Enter Size (S/M/L): ";
-    cin >> size;
+        while (current != nullptr) {
+            if (current->data.getStaffID() == id) {
+                if (previous == nullptr) {
+                    staffHead = current->next;
+                } else {
+                    previous->next = current->next;
+                }
 
-    cout << "Enter Price: ";
-    cin >> price;
+                delete current;
+                cout << "Staff member removed.\n";
+                return;
+            }
 
-    cout << "Enter Type (Hot/Ice/Frappe): ";
-    cin >> type;
+            previous = current;
+            current = current->next;
+        }
 
-    Menu newMenu(id, name, size, price, type);
+        cout << "Staff member not found.\n";
+    }
 
-    MenuNode* newNode = new MenuNode(newMenu);
-    newNode->next = menuHead;
-    menuHead = newNode;
+    // ---------- ORDER LINKED LIST ----------
 
-    cout << "Menu item added successfully!\n";
-}
+    void takeOrder(string date, string time, string staffID) {
+        Order* newOrder = new Order(nextOrderID, date, time, staffID);
+        nextOrderID++;
 
-void displayMainMenu() {
-    int choice;
+        OrderNode* newNode = new OrderNode(newOrder);
 
-    // Load saved data before starting
-    loadAllData();
+        if (orderHead == nullptr) {
+            orderHead = newNode;
+        } else {
+            OrderNode* current = orderHead;
 
-    do {
-        cout << "\n================================\n";
-        cout << "       COFFEE SHOP SYSTEM       \n";
-        cout << "================================\n";
-        cout << "1. Manage Menu\n";
-        cout << "2. Manage Inventory\n";
+            while (current->next != nullptr) {
+                current = current->next;
+            }
+
+            current->next = newNode;
+        }
+
+        cout << "New order created. Order ID: "
+             << newOrder->getOrderID() << endl;
+    }
+
+    void viewOrderHistory() {
+        if (checkAdminPassword() == false) return;
+        if (orderHead == nullptr) {
+            cout << "There is no order history.\n";
+            return;
+        }
+
+        OrderNode* current = orderHead;
+
+        while (current != nullptr) {
+            current->data->displayOrder();
+            current = current->next;
+        }
+    }
+
+    void generateSalesReport() {
+        if (checkAdminPassword() == false) return;
+        SalesReport report;
+        report.calculateReport(orderHead);
+        report.displayReport();
+    }
+
+    // ---------- MAIN PROGRAM MENU ----------
+
+    void displayMainMenu() {
+        cout << "\n========== COFFEE SHOP SYSTEM ==========\n";
+        cout << "1. Manage Menu (Administrator)\n";
+        cout << "2. Manage Inventory (Administrator)\n";
         cout << "3. Take New Order\n";
-        cout << "4. Manage Staff\n";
-        cout << "5. View Order History\n";
-        cout << "6. Sales Report\n";
-        cout << "7. Save Data\n";
-        cout << "0. Exit\n";
-        cout << "================================\n";
-        cout << "Enter Choice: ";
+        cout << "4. View Order History (Administrator)\n";
+        cout << "5. Manage Staff (Administrator)\n";
+        cout << "6. Sales Report (Administrator)\n";
+        cout << "7. Change Administrator Password\n";
+        cout << "8. Exit\n";
+        cout << "========================================\n";
+    }
 
-        cin >> choice;
-
-        switch (choice) {
-            case 1:
-                manageMenu();
-                break;
-
-            case 2:
-                manageInventory();
-                break;
-
-            case 3:
-                takeOrder();
-                break;
-
-            case 4:
-                manageStaff();
-                break;
-
-            case 5:
-                viewOrderHistory();
-                break;
-
-            case 6:
-                generateSalesReport();
-                break;
-
-            case 7:
-                saveAllData();
-                break;
-
-            case 0:
-                saveAllData();
-                cout << "Thank you for using Coffee Shop System!\n";
-                break;
-
-            default:
-                cout << "Invalid choice! Please try again.\n";
-        }
-
-    } while (choice != 0);
-}
+    // CSV loading and saving will be designed in a later phase.
 };
-
-
-// Please check our proposal description and add more class. Have questions? We can discuss!
-// After writing your own algorithm, please don't commit yet. Save the program to test and debug on your compiler first.
-// And we will check it together. After succeed and agreed, we will commit it into GitHub!
